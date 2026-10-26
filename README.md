@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="app/src/jvmMain/resources/app_icon.png" alt="Glyph Studio app icon" width="112" />
-  <h1>Glyph Studio</h1>
+  <img src="app/src/jvmMain/resources/app_icon.png" alt="GlyphStudio app icon" width="112" />
+  <h1>GlyphStudio</h1>
   <p><strong>Explore SF Symbols. Build with them in Compose.</strong></p>
   <p>A symbol catalog for desktop and a reusable icon library for Jetpack Compose and Kotlin Multiplatform.</p>
 
@@ -14,13 +14,13 @@
 
 ## One project, two tools
 
-| Glyph Studio Catalog | Compose Symbols |
+| GlyphStudio Catalog | Compose Symbols |
 | --- | --- |
 | Search and browse more than 7,000 symbols | Add vector symbols to Compose interfaces |
 | Preview symbols, switch rendering styles, and save favorites | Use in Android, desktop, and Kotlin Multiplatform projects |
 | Copy symbol names and ready-to-use snippets | Tune weight, scale, color, and animation |
 
-## Get Glyph Studio
+## Get GlyphStudio
 
 Download the latest installer from [Releases](https://github.com/bxanedot/GlyphStudio/releases/latest):
 
@@ -81,7 +81,7 @@ On macOS or Linux, use `./gradlew` with the same tasks.
 
 ## Apple SF Symbols
 
-Glyph Studio is an independent project and is not affiliated with Apple. SF Symbols and related artwork are Apple property; follow Apple's [SF Symbols usage terms](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/) and restrictions. The symbols must not be used in app icons, logos, or other trademark use.
+GlyphStudio is an independent project and is not affiliated with Apple. SF Symbols and related artwork are Apple property; follow Apple's [SF Symbols usage terms](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/) and restrictions. The symbols must not be used in app icons, logos, or other trademark use.
 
 ## Project layout
 

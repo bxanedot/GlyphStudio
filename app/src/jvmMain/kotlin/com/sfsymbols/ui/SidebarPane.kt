@@ -85,7 +85,7 @@ public fun SidebarPane(
     val cs = MacosTheme.colorScheme
     Surface(
         modifier = modifier
-            .width(238.dp),
+            .width(220.dp),
         materialSize = GlassMaterialSize.Medium,
         tintColor = cs.surface.copy(alpha = 0.45f),
     ) {

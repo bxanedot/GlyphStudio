@@ -34,7 +34,7 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.components.resources)
-                if (rootProject.name == "Glyph Studio") implementation(project(":sfsymbols"))
+                if (rootProject.name == "GlyphStudio") implementation(project(":sfsymbols"))
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlin.reflect)
@@ -60,7 +60,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "Glyph Studio"
+            packageName = "GlyphStudio"
             packageVersion = providers.gradleProperty("appVersion").orElse(
                 providers.environmentVariable("GITHUB_REF_NAME").map { ref ->
                     ref.removePrefix("v").takeIf { it.matches(Regex("\\d+\\.\\d+\\.\\d+")) } ?: "1.0.0"
@@ -74,7 +74,7 @@ compose.desktop {
                 iconFile.set(project.file("src/jvmMain/resources/app_icon.ico"))
                 shortcut = true
                 menu = true
-                menuGroup = "Glyph Studio"
+                menuGroup = "GlyphStudio"
                 perUserInstall = true
                 dirChooser = true
                 // Keep this ID stable so newer package versions upgrade the app.
@@ -86,7 +86,7 @@ compose.desktop {
             }
 
             macOS {
-                bundleID = "com.sfsymbols.catalog"
+                bundleID = "com.bxane.glyphstudio"
                 iconFile.set(project.file("src/jvmMain/resources/app_icon.icns"))
                 // Signing + notarization switch on only when CI provides the
                 // Developer ID secrets; local and fork builds stay unsigned.

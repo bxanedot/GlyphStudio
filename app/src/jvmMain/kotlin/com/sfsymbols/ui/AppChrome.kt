@@ -1,5 +1,8 @@
 package com.sfsymbols.ui
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,25 +14,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.sfsymbols.data.SymbolMode
+import com.sfsymbols.loadAppIcon
 import com.sfsymbols.viewmodel.CatalogViewModel
-import dev.nucleusframework.macoscompose.components.NavigationButtons
 import dev.nucleusframework.macoscompose.components.PopupButton
+import dev.nucleusframework.macoscompose.components.SearchField
 import dev.nucleusframework.macoscompose.components.Surface
 import dev.nucleusframework.macoscompose.components.Text
 import dev.nucleusframework.macoscompose.components.TitleBar
-import dev.nucleusframework.macoscompose.components.TitleBarButtonGroup
-import dev.nucleusframework.macoscompose.components.TitleBarGroupButton
-import dev.nucleusframework.macoscompose.components.SearchField
-import dev.nucleusframework.macoscompose.components.ToolbarSeparator
 import dev.nucleusframework.macoscompose.icons.Icon
 import dev.nucleusframework.macoscompose.icons.LucideLayoutGrid
 import dev.nucleusframework.macoscompose.icons.LucideList
@@ -39,162 +38,81 @@ import dev.nucleusframework.macoscompose.theme.MacosTheme
 private val GRID_SIZE_OPTIONS = listOf("50%", "70%", "100%", "130%", "160%")
 private val GRID_SIZE_SCALES = listOf(0.5f, 0.7f, 1f, 1.3f, 1.6f)
 
-/**
- * App chrome: a Finder-style [TitleBar] at the top (natively reserving the
- * window traffic-light space), followed by one full-width toolbar and a
- * three-region browsing workspace.
- */
 @Composable
-public fun AppChrome(
-    viewModel: CatalogViewModel,
-    modifier: Modifier = Modifier,
-) {
-    Column(modifier = modifier.fillMaxSize()) {
-        FinderTitleBar(viewModel)
-        BrowserToolbar(viewModel)
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-        ) {
-            SidebarPane(
-                viewModel,
-                Modifier.fillMaxHeight(),
-            )
-            SymbolGrid(
-                viewModel = viewModel,
-                modifier = Modifier.weight(1f).fillMaxHeight().padding(horizontal = 8.dp),
-            )
-            DetailPane(
-                viewModel,
-                Modifier
-                    .width(300.dp)
-                    .fillMaxHeight()
-                    .padding(vertical = 6.dp, horizontal = 6.dp),
-            )
+public fun AppChrome(viewModel: CatalogViewModel, modifier: Modifier = Modifier) {
+    Column(modifier.fillMaxSize()) {
+        TitleBar(title = { Text(viewModel.selectedCategory ?: if (viewModel.onlyPinned) "Favorites" else "All Symbols") })
+        BrowserHeader(viewModel)
+        Row(Modifier.fillMaxWidth().weight(1f)) {
+            SidebarPane(viewModel, Modifier.fillMaxHeight())
+            Column(Modifier.weight(1f).fillMaxHeight()) {
+                GalleryToolbar(viewModel)
+                SymbolGrid(viewModel = viewModel, modifier = Modifier.weight(1f).fillMaxWidth())
+            }
+            DetailPane(viewModel, Modifier.width(290.dp).fillMaxHeight().padding(top = 10.dp, end = 10.dp, bottom = 10.dp))
         }
     }
 }
 
-/**
- * Finder-style top bar. The native [TitleBar] reserves the window-control
- * (close/minimize/zoom) space on the left; it carries just the title and
- * navigation here — the actual controls live in [BrowserToolbar] below.
- */
 @Composable
-private fun FinderTitleBar(viewModel: CatalogViewModel) {
-    TitleBar(
-        title = {
-            Text(browserTitle(viewModel))
-        },
-    )
+private fun BrowserHeader(viewModel: CatalogViewModel) {
+    val cs = MacosTheme.colorScheme
+    Row(
+        Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        BrandMark(Modifier.size(28.dp))
+        Text("GlyphStudio", color = cs.textPrimary)
+        Spacer(Modifier.weight(1f))
+        SearchField(
+            value = viewModel.query,
+            onValueChange = viewModel::search,
+            placeholder = "Search symbols",
+            modifier = Modifier.width(260.dp),
+        )
+        ThemeSelector(viewModel.darkTheme, viewModel::updateDarkTheme)
+    }
 }
 
-private fun browserTitle(viewModel: CatalogViewModel): String =
-    viewModel.selectedCategory
-        ?: if (viewModel.onlyPinned) "Favorites" else "All Symbols"
-
-/**
- * Full-width browser toolbar above the workspace, with navigation, symbol
- * mode, layout size, count, and search in one control row.
- */
 @Composable
-private fun BrowserToolbar(viewModel: CatalogViewModel) {
-    val cs = MacosTheme.colorScheme
+private fun BrandMark(modifier: Modifier = Modifier) {
+    val painter: Painter = androidx.compose.runtime.remember { loadAppIcon() }
+    androidx.compose.foundation.Image(painter, contentDescription = "GlyphStudio", modifier = modifier)
+}
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 6.dp),
-        materialSize = GlassMaterialSize.Medium,
-        tintColor = cs.background.copy(alpha = 0.55f),
+@Composable
+private fun GalleryToolbar(viewModel: CatalogViewModel) {
+    val cs = MacosTheme.colorScheme
+    Row(
+        Modifier.fillMaxWidth().padding(start = 18.dp, end = 18.dp, top = 8.dp, bottom = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
+        Text("${viewModel.filteredSymbols.size} symbols", color = cs.textSecondary)
+        Spacer(Modifier.weight(1f))
+        PopupButton(
+            items = listOf("Dualtone", "Monochrome"),
+            selectedIndex = if (viewModel.mode == SymbolMode.Dualtone) 0 else 1,
+            onSelectedChange = { viewModel.updateMode(if (it == 0) SymbolMode.Dualtone else SymbolMode.Monochrome) },
+            modifier = Modifier.width(136.dp),
+            itemText = { it },
+        )
+        PopupButton(
+            items = GRID_SIZE_OPTIONS,
+            selectedIndex = nearestGridIndex(viewModel.gridScale),
+            onSelectedChange = { viewModel.updateGridScale(GRID_SIZE_SCALES[it]) },
+            modifier = Modifier.width(88.dp),
+            itemText = { it },
+        )
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 14.dp, end = 14.dp, top = 8.dp, bottom = 8.dp),
+            Modifier.clip(RoundedCornerShape(8.dp)).background(cs.surface.copy(alpha = 0.65f)),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            // Back / forward navigation
-            NavigationButtons(
-                onBack = { viewModel.search("") },
-                onForward = {},
-                backEnabled = viewModel.query.isNotEmpty(),
-                forwardEnabled = false,
-            )
-            Spacer(Modifier.width(12.dp))
-            ToolbarSeparator()
-            Spacer(Modifier.width(12.dp))
-
-            // Symbol mode
-            PopupButton(
-                items = listOf("Dualtone", "Monochrome"),
-                selectedIndex = if (viewModel.mode == SymbolMode.Dualtone) 0 else 1,
-                onSelectedChange = { idx ->
-                    viewModel.updateMode(if (idx == 0) SymbolMode.Dualtone else SymbolMode.Monochrome)
-                },
-                modifier = Modifier.width(150.dp),
-                itemText = { it },
-            )
-
-            Spacer(Modifier.width(12.dp))
-            ToolbarSeparator()
-            Spacer(Modifier.width(12.dp))
-
-            // Layout size (grid zoom)
-            PopupButton(
-                items = GRID_SIZE_OPTIONS,
-                selectedIndex = nearestGridIndex(viewModel.gridScale),
-                onSelectedChange = { idx ->
-                    viewModel.updateGridScale(GRID_SIZE_SCALES[idx])
-                },
-                modifier = Modifier.width(110.dp),
-                itemText = { it },
-            )
-
-            TitleBarButtonGroup {
-                TitleBarGroupButton(
-                    circularHighlight = !viewModel.listView,
-                    onClick = { if (viewModel.listView) viewModel.toggleListView() },
-                ) {
-                    Icon(LucideLayoutGrid, modifier = Modifier.size(14.dp))
-                }
-                TitleBarGroupButton(
-                    circularHighlight = viewModel.listView,
-                    onClick = { if (!viewModel.listView) viewModel.toggleListView() },
-                ) {
-                    Icon(LucideList, modifier = Modifier.size(14.dp))
-                }
-            }
-
-            ToolbarSeparator()
-
-            Text(
-                text = "${viewModel.filteredSymbols.size} symbols",
-                color = cs.textSecondary,
-            )
-
-            Spacer(Modifier.weight(1f))
-
-            SearchField(
-                value = viewModel.query,
-                onValueChange = { viewModel.search(it) },
-                placeholder = "Search",
-                modifier = Modifier.width(200.dp),
-            )
+            Icon(LucideLayoutGrid, modifier = Modifier.size(30.dp).padding(8.dp).clickable { if (viewModel.listView) viewModel.toggleListView() })
+            Icon(LucideList, modifier = Modifier.size(30.dp).padding(8.dp).clickable { if (!viewModel.listView) viewModel.toggleListView() })
         }
     }
 }
 
-private fun nearestGridIndex(scale: Float): Int {
-    var best = 2
-    var bestDist = Float.MAX_VALUE
-    GRID_SIZE_SCALES.forEachIndexed { i, s ->
-        val d = kotlin.math.abs(s - scale)
-        if (d < bestDist) {
-            bestDist = d
-            best = i
-        }
-    }
-    return best
-}
+private fun nearestGridIndex(scale: Float): Int = GRID_SIZE_SCALES.indices.minByOrNull { kotlin.math.abs(GRID_SIZE_SCALES[it] - scale) } ?: 2

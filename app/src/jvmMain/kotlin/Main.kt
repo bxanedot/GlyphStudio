@@ -14,7 +14,7 @@ import dev.nucleusframework.application.nucleusApplication
 import dev.nucleusframework.macoscompose.window.MacosDecoratedWindow
 import org.jetbrains.skia.Image
 
-private fun loadAppIcon(): Painter {
+internal fun loadAppIcon(): Painter {
     val bytes = checkNotNull(Thread.currentThread().contextClassLoader.getResourceAsStream("app_icon.png")).use { it.readBytes() }
     return BitmapPainter(Image.makeFromEncoded(bytes).toComposeImageBitmap())
 }
@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
 private fun launchCatalog() = nucleusApplication {
     MacosDecoratedWindow(
         onCloseRequest = { exitApplication() },
-        title = "Glyph Studio",
+        title = "GlyphStudio",
         icon = loadAppIcon(),
         state = WindowState(
             position = WindowPosition(Alignment.Center),

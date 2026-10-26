@@ -57,4 +57,15 @@ class CatalogViewModelTest {
         vm.copyAppleName(heart)
         assertEquals("Clipboard unavailable. Try copying again.", vm.badgeText)
     }
+
+    @Test fun `copying MCP configuration uses shared clipboard feedback`() {
+        var copied: String? = null
+        val vm = CatalogViewModel { copied = it }
+        val config = "{\"mcpServers\":{\"glyphstudio\":{}}}"
+
+        vm.copyMcpConfig(config)
+
+        assertEquals(config, copied)
+        assertEquals("Copied MCP configuration", vm.badgeText)
+    }
 }

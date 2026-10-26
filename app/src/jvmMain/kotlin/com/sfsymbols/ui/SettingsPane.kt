@@ -30,7 +30,7 @@ import com.sfsymbols.viewmodel.CatalogViewModel
 import dev.nucleusframework.macoscompose.components.GroupBox
 import dev.nucleusframework.macoscompose.components.NavigationButtons
 import dev.nucleusframework.macoscompose.components.Surface
-import dev.nucleusframework.macoscompose.components.Switch
+import dev.nucleusframework.macoscompose.components.PushButton
 import dev.nucleusframework.macoscompose.components.Text
 import dev.nucleusframework.macoscompose.components.TitleBar
 import dev.nucleusframework.macoscompose.components.TitleBarButtonGroup
@@ -67,7 +67,7 @@ public fun SettingsPane(
         kotlinx.serialization.json.JsonObject.serializer(),
         buildJsonObject {
             put("mcpServers", buildJsonObject {
-                put("sf-symbols-catalog", buildJsonObject {
+                    put("glyphstudio", buildJsonObject {
                     put("command", "java")
                     putJsonArray("args") {
                         add("-Djava.awt.headless=true")
@@ -112,11 +112,8 @@ public fun SettingsPane(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Text(text = "Dark mode", color = cs.textPrimary, modifier = Modifier.weight(1f))
-                    Switch(
-                        checked = viewModel.darkTheme,
-                        onCheckedChange = viewModel::updateDarkTheme,
-                    )
+                    Text(text = "Appearance", color = cs.textPrimary, modifier = Modifier.weight(1f))
+                    ThemeSelector(viewModel.darkTheme, viewModel::updateDarkTheme)
                 }
             }
 
@@ -141,8 +138,16 @@ public fun SettingsPane(
                 SelectionContainer {
                     Text(
                         text = mcpConfig,
-                        color = cs.textTertiary,
+                        color = cs.textSecondary,
                     )
+                }
+                Spacer(Modifier.height(10.dp))
+                PushButton(onClick = { viewModel.copyMcpConfig(mcpConfig) }) {
+                    Text("Copy configuration")
+                }
+                viewModel.badgeText?.let { message ->
+                    Spacer(Modifier.height(6.dp))
+                    Text(message, color = cs.textSecondary)
                 }
             }
 

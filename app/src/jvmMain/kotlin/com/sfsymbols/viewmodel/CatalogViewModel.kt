@@ -253,6 +253,10 @@ public class CatalogViewModel(
         copyText(composeSnippet(meta, mode, iconColor, tintIcon, backgroundColor), "Copied Compose code")
     }
 
+    public fun copyMcpConfig(config: String) {
+        copyText(config, "Copied MCP configuration")
+    }
+
     private fun copyText(text: String, success: String) {
         try {
             clipboardWriter(text)

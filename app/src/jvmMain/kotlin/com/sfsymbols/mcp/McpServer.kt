@@ -67,7 +67,7 @@ public class McpServer(
                     put("protocolVersion", requested.takeIf { it in protocolVersions } ?: protocolVersions.first())
                     putJsonObject("capabilities") { putJsonObject("tools") {} }
                     putJsonObject("serverInfo") {
-                        put("name", "sf-symbols-catalog")
+                        put("name", "glyphstudio")
                         put("version", "1.0.0")
                     }
                 }

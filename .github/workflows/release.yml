@@ -65,4 +65,4 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref_name }}
-        run: gh release create "$TAG" dist/* --generate-notes --title "Glyph Studio $TAG"
+        run: gh release create "$TAG" dist/* --generate-notes --title "GlyphStudio $TAG"
