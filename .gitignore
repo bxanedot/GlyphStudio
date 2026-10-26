@@ -1,0 +1,11 @@
+.gradle/
+.kotlin/
+**/build/
+**/out/
+.idea/
+*.iml
+local.properties
+.DS_Store
+Thumbs.db
+SF_Symbol/
+Jetpack_SF_Symbols/
