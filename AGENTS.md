@@ -34,9 +34,9 @@ Prefer the JVM-only tasks. `./gradlew build` compiles the library for every targ
 
 | Path | Contents |
 | --- | --- |
-| `sfsymbols/src/commonMain/kotlin/composables/sfsymbols/monochrome/` and `dualtone/` | 7,007 files each, one `ImageVector` property per symbol |
-| `sfsymbols/src/commonMain/kotlin/composables/sfsymbols/core/data/` | Compressed glyph blobs and catalog tables for the `SfSymbol` engine |
-| `sfsymbols/src/commonMain/kotlin/composables/sfsymbols/SfSymbolsCatalog.kt` | The 7,007-line name/category table (hand-written code at the bottom) |
+| `sfsymbols/src/commonMain/kotlin/com/composables/sfsymbols/monochrome/` and `dualtone/` | 7,007 files each, one `ImageVector` property per symbol |
+| `sfsymbols/src/commonMain/kotlin/com/composables/sfsymbols/core/data/` | Compressed glyph blobs and catalog tables for the `SfSymbol` engine |
+| `sfsymbols/src/commonMain/kotlin/com/composables/sfsymbols/SfSymbolsCatalog.kt` | The 7,007-line name/category table (hand-written code at the bottom) |
 
 These paths are listed in `.ignore`, so ripgrep-based search skips them. To find a symbol, don't search them: use `SfSymbolsCatalog.findByAppleName("heart.fill")` / `findByPascalName("SFHeartFill")`, the MCP `get_symbol` tool, or `rg --no-ignore`. The generator (`scripts/sf_encode.py`, named in the file headers) is **not in this repo**, so a change to symbol data can't be regenerated here. Treat that data as read-only.
 
@@ -49,7 +49,7 @@ These paths are listed in `.ignore`, so ripgrep-based search skips them. To find
 
 | File | Role |
 | --- | --- |
-| `Main.kt` | Entry point. `--mcp` runs the MCP server on stdio; otherwise it opens the window |
+| `com/sfsymbols/Main.kt` | Entry point. `--mcp` runs the MCP server on stdio; otherwise it opens the window |
 | `com/sfsymbols/viewmodel/CatalogViewModel.kt` | All UI state (Compose `mutableStateOf`, no Android ViewModel) |
 | `com/sfsymbols/data/FuzzySearch.kt` | Ranked, typo-tolerant search; tags come from `resources/symbol_tags.txt` via `SymbolTags.kt` |
 | `com/sfsymbols/data/SfSymbolIconResolver.kt` | Looks up a symbol's `ImageVector` by name through JVM reflection on the library's facade classes |
