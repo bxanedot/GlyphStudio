@@ -3,14 +3,12 @@ package com.sfsymbols.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,13 +24,11 @@ import com.sfsymbols.loadAppIcon
 import com.sfsymbols.viewmodel.CatalogViewModel
 import dev.nucleusframework.macoscompose.components.PopupButton
 import dev.nucleusframework.macoscompose.components.SearchField
-import dev.nucleusframework.macoscompose.components.Surface
 import dev.nucleusframework.macoscompose.components.Text
 import dev.nucleusframework.macoscompose.components.TitleBar
 import dev.nucleusframework.macoscompose.icons.Icon
 import dev.nucleusframework.macoscompose.icons.LucideLayoutGrid
 import dev.nucleusframework.macoscompose.icons.LucideList
-import dev.nucleusframework.macoscompose.theme.GlassMaterialSize
 import dev.nucleusframework.macoscompose.theme.MacosTheme
 
 private val GRID_SIZE_OPTIONS = listOf("50%", "70%", "100%", "130%", "160%")

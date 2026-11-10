@@ -1,10 +1,7 @@
 package com.sfsymbols.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +26,6 @@ import com.sfsymbols.util.openUrl
 import com.sfsymbols.viewmodel.CatalogViewModel
 import dev.nucleusframework.macoscompose.components.GroupBox
 import dev.nucleusframework.macoscompose.components.NavigationButtons
-import dev.nucleusframework.macoscompose.components.Surface
 import dev.nucleusframework.macoscompose.components.PushButton
 import dev.nucleusframework.macoscompose.components.Text
 import dev.nucleusframework.macoscompose.components.TitleBar
@@ -37,7 +33,6 @@ import dev.nucleusframework.macoscompose.components.TitleBarButtonGroup
 import dev.nucleusframework.macoscompose.components.TitleBarGroupButton
 import dev.nucleusframework.macoscompose.icons.Icon
 import dev.nucleusframework.macoscompose.icons.LucideChevronLeft
-import dev.nucleusframework.macoscompose.theme.GlassMaterialSize
 import dev.nucleusframework.macoscompose.theme.MacosTheme
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
