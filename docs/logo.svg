@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>GlyphStudio</title>
+  <rect width="512" height="512" rx="112" fill="#2E3D52"/>
+  <g fill="#E8EDF2">
+    <rect x="108" y="108" width="88" height="296" rx="44"/>
+    <rect x="212" y="108" width="88" height="296" rx="44"/>
+    <rect x="316" y="108" width="88" height="296" rx="44"/>
+  </g>
+</svg>

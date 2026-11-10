@@ -1,23 +1,16 @@
-﻿package com.sfsymbols
+package com.sfsymbols
 
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.toComposeImageBitmap
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.WindowPosition
 import com.sfsymbols.mcp.McpServer
+import com.sfsymbols.ui.AppLogo
 import com.sfsymbols.ui.SfSymbolsCatalogApp
 import dev.nucleusframework.application.nucleusApplication
 import dev.nucleusframework.macoscompose.window.MacosDecoratedWindow
-import org.jetbrains.skia.Image
-
-internal fun loadAppIcon(): Painter {
-    val bytes = checkNotNull(Thread.currentThread().contextClassLoader.getResourceAsStream("app_icon.png")).use { it.readBytes() }
-    return BitmapPainter(Image.makeFromEncoded(bytes).toComposeImageBitmap())
-}
 
 fun main(args: Array<String>) {
     if ("--mcp" in args) {
@@ -31,7 +24,7 @@ private fun launchCatalog() = nucleusApplication {
     MacosDecoratedWindow(
         onCloseRequest = { exitApplication() },
         title = "GlyphStudio",
-        icon = loadAppIcon(),
+        icon = rememberVectorPainter(AppLogo),
         state = WindowState(
             position = WindowPosition(Alignment.Center),
             size = DpSize(1280.dp, 820.dp),

@@ -1,5 +1,6 @@
 package com.sfsymbols.ui
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.dp
 import com.sfsymbols.data.SymbolMode
-import com.sfsymbols.loadAppIcon
 import com.sfsymbols.viewmodel.CatalogViewModel
 import dev.nucleusframework.macoscompose.components.PopupButton
 import dev.nucleusframework.macoscompose.components.SearchField
@@ -73,8 +72,7 @@ private fun BrowserHeader(viewModel: CatalogViewModel) {
 
 @Composable
 private fun BrandMark(modifier: Modifier = Modifier) {
-    val painter: Painter = androidx.compose.runtime.remember { loadAppIcon() }
-    androidx.compose.foundation.Image(painter, contentDescription = "GlyphStudio", modifier = modifier)
+    Image(AppLogo, contentDescription = "GlyphStudio", modifier = modifier)
 }
 
 @Composable

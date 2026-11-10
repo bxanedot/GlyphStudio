@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="app/src/jvmMain/resources/app_icon.png" alt="GlyphStudio app icon" width="112" />
+  <img src="docs/logo.svg" alt="GlyphStudio app icon" width="112" />
   <h1>GlyphStudio</h1>
   <p><strong>Explore SF Symbols. Build with them in Compose.</strong></p>
   <p>A symbol catalog for desktop and a reusable icon library for Jetpack Compose and Kotlin Multiplatform.</p>
