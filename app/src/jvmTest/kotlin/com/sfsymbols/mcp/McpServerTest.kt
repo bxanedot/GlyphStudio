@@ -51,7 +51,9 @@ class McpServerTest {
         )
         assertEquals(replies[0]["result"], replies[1]["result"])
         val text = replies[0]["result"]!!.jsonObject["content"]!!.jsonArray[0].jsonObject["text"]!!.jsonPrimitive.content
-        assertEquals("heart.fill", Json.parseToJsonElement(text).jsonObject["appleName"]!!.jsonPrimitive.content)
+        val symbol = Json.parseToJsonElement(text).jsonObject
+        assertEquals("heart.fill", symbol["appleName"]!!.jsonPrimitive.content)
+        assertEquals("com.composables.sfsymbols.dualtone.SFHeartFill", symbol["import"]!!.jsonPrimitive.content)
         assertTrue(replies[2]["result"]!!.jsonObject["isError"]!!.jsonPrimitive.boolean)
     }
 

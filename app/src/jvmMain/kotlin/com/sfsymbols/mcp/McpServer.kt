@@ -131,7 +131,7 @@ public class McpServer(
             add(
                 buildJsonObject {
                     put("name", "get_symbol")
-                    put("description", "Resolve a symbol's pascal code (e.g. 'SFHeartFill') or apple name (e.g. 'heart.fill') to its metadata including categories and mode prefix.")
+                    put("description", "Resolve a symbol's pascal code (e.g. 'SFHeartFill') or apple name (e.g. 'heart.fill') to its metadata: categories, the Compose expression for each variant and the import it needs.")
                     putJsonObject("inputSchema") {
                         put("type", "object")
                         putJsonObject("properties") {
@@ -195,6 +195,8 @@ public class McpServer(
         put("pascalName", meta.pascalName)
         put("code", "SfSymbols.Dualtone.${meta.pascalName}")
         put("monochromeCode", "SfSymbols.Monochrome.${meta.pascalName}")
+        put("import", "com.composables.sfsymbols.dualtone.${meta.pascalName}")
+        put("monochromeImport", "com.composables.sfsymbols.monochrome.${meta.pascalName}")
         putJsonArray("categories") { meta.categories.forEach { add(JsonPrimitive(it)) } }
         put("isRestricted", meta.isRestricted)
     }
