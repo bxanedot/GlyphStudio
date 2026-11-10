@@ -32,9 +32,6 @@ public class CatalogViewModel(
     public var screen: Screen by mutableStateOf(Screen.Catalog)
         private set
 
-    public var darkTheme: Boolean by mutableStateOf(true)
-        private set
-
     public var query: String by mutableStateOf("")
         private set
 
@@ -171,10 +168,6 @@ public class CatalogViewModel(
 
     public fun navigate(screen: Screen) {
         this.screen = screen
-    }
-
-    public fun updateDarkTheme(dark: Boolean) {
-        darkTheme = dark
     }
 
     public fun updateGridScale(scale: Float) {

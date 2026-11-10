@@ -8,7 +8,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import dev.nucleusframework.macoscompose.theme.MacosTheme
 import com.sfsymbols.ui.theme.AppTheme
 import com.sfsymbols.viewmodel.CatalogViewModel
 
@@ -19,11 +19,11 @@ import com.sfsymbols.viewmodel.CatalogViewModel
 @Composable
 public fun SfSymbolsCatalogApp() {
     val viewModel = remember { CatalogViewModel() }
-    AppTheme(darkTheme = viewModel.darkTheme) {
+    AppTheme {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(if (viewModel.darkTheme) Color(0xFF171719) else Color(0xFFF5F2EC))
+                .background(MacosTheme.colorScheme.background)
         ) {
             Crossfade(
                 targetState = viewModel.screen,
