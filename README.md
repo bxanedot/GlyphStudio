@@ -1,104 +1,81 @@
 <div align="center">
-  <img src="docs/logo.svg" alt="GlyphStudio app icon" width="112" />
+  <img src="docs/logo.svg" alt="GlyphStudio app icon" width="128" />
   <h1>GlyphStudio</h1>
-  <p><strong>Explore SF Symbols. Build with them in Compose.</strong></p>
-  <p>A symbol catalog for desktop and a reusable icon library for Jetpack Compose and Kotlin Multiplatform.</p>
-
-  <a href="https://github.com/bxanedot/GlyphStudio/releases"><img src="https://img.shields.io/github/v/release/bxanedot/GlyphStudio?display_name=tag&sort=semver&style=flat-square" alt="Latest release" /></a>
-  <a href="https://github.com/bxanedot/GlyphStudio/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/bxanedot/GlyphStudio/release.yml?style=flat-square&label=installers" alt="Installer builds" /></a>
-  <img src="https://img.shields.io/badge/Kotlin-2.4.20-7F52FF?style=flat-square&logo=kotlin&logoColor=white" alt="Kotlin 2.4.20" />
-  <img src="https://img.shields.io/badge/Compose_Multiplatform-1.12.1-4285F4?style=flat-square" alt="Compose Multiplatform 1.12.1" />
+  <h3>Every SF Symbol. Right on your desktop.</h3>
+  <p>Browse more than 7,000 symbols, then build with them in Compose.</p>
+  <p>
+    <a href="https://github.com/bxanedot/GlyphStudio/releases/latest"><strong>Download for macOS, Windows and Linux</strong></a>
+    &nbsp;·&nbsp;
+    <a href="#build-with-compose"><strong>Use the Compose library</strong></a>
+  </p>
+  <a href="https://github.com/bxanedot/GlyphStudio/releases/latest"><img src="https://img.shields.io/github/v/release/bxanedot/GlyphStudio?display_name=tag&sort=semver&style=flat-square&label=latest" alt="Latest release" /></a>
 </div>
 
----
+<br />
 
-## One project, two tools
+### Find the right symbol. Fast.
+Search understands typos and everyday words, so “garbage” finds `trash` and “cog” finds `gearshape`. Browse by category, switch between dualtone and monochrome, and save favorites.
 
-| GlyphStudio Catalog | Compose Symbols |
-| --- | --- |
-| Search and browse more than 7,000 symbols | Add vector symbols to Compose interfaces |
-| Preview symbols, switch rendering styles, and save favorites | Use in Android, desktop, and Kotlin Multiplatform projects |
-| Copy symbol names and ready-to-use snippets | Tune weight, scale, color, and animation |
+### Feels right at home.
+GlyphStudio follows your system’s light or dark appearance, and its sidebar and inspector use Liquid Glass.
 
-## Get GlyphStudio
+### From symbol to code in one click.
+Pick a colour and background, then copy the symbol’s name or a complete, ready-to-paste Compose snippet.
 
-Download the latest installer from [Releases](https://github.com/bxanedot/GlyphStudio/releases/latest):
+### Built for coding agents.
+GlyphStudio is also an MCP server. Point your AI agent at the installed app and it can search every symbol and get the exact Compose import. Nothing extra to install.
 
-- **Windows:** `.msi`
-- **macOS:** `.dmg`
-- **Linux:** `.deb`
+<br />
 
-Installers are built on their target operating systems by GitHub Actions when a `v*` tag is pushed. macOS downloads are unsigned unless signing secrets are configured.
+## Download
 
-## Use the Compose library
+| macOS | Windows | Linux |
+| :---: | :---: | :---: |
+| [`.dmg`](https://github.com/bxanedot/GlyphStudio/releases/latest) | [`.msi`](https://github.com/bxanedot/GlyphStudio/releases/latest) | [`.deb`](https://github.com/bxanedot/GlyphStudio/releases/latest) |
 
-The root build already includes `:sfsymbols`. To use it from another project, place the module beside your app module and add it to the build:
+The macOS app isn’t signed yet. The first time you open it, Control-click the app and choose **Open**.
 
-```kotlin
-// settings.gradle.kts
-include(":sfsymbols")
-```
+## Build with Compose
 
-```kotlin
-// app/build.gradle.kts
-dependencies {
-    implementation(project(":sfsymbols"))
-}
-```
-
-Then use a symbol in your UI:
+The `sfsymbols` library brings the same symbols to Jetpack Compose and Kotlin Multiplatform: Android, desktop, iOS and web. You can set weight, scale, colour and animation.
 
 ```kotlin
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
-import com.composables.sfsymbols.SfSymbol
-import com.composables.sfsymbols.SfSymbolIcon
-import com.composables.sfsymbols.SfWeight
-
-@Composable
-fun FavoriteAction() {
-    SfSymbolIcon(
-        symbol = SfSymbol["heart.fill"],
-        contentDescription = "Favorite",
-        size = 24.dp,
-        weight = SfWeight.Semibold,
-    )
-}
+SfSymbolIcon(
+    symbol = SfSymbol["heart.fill"],
+    contentDescription = "Favorite",
+    size = 24.dp,
+    weight = SfWeight.Semibold,
+)
 ```
 
-See the [installation guide](docs/INSTALLATION.md), [usage guide](docs/USAGE.md), and [animation guide](docs/ANIMATION.md).
+To add it to your project, see the [installation guide](docs/INSTALLATION.md). Then read the [usage guide](docs/USAGE.md) and the [animation guide](docs/ANIMATION.md).
 
-## Build from source
+## Connect an AI agent
 
-Requires JDK 21 or newer.
-
-```powershell
-./gradlew.bat :app:run
-./gradlew.bat :sfsymbols:build
-```
-
-On macOS or Linux, use `./gradlew` with the same tasks.
-
-## Apple SF Symbols
-
-GlyphStudio is an independent project and is not affiliated with Apple. SF Symbols and related artwork are Apple property; follow Apple's [SF Symbols usage terms](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/) and restrictions. The symbols must not be used in app icons, logos, or other trademark use.
-
-## Working with coding agents
-
-GlyphStudio doubles as an MCP server, so AI agents can search symbols and get ready-to-paste imports. Add this to your agent's MCP settings (**Settings → MCP** in the app shows it with your exact install path):
+Add this to your agent’s MCP settings. **Settings → MCP** in the app shows it with your exact install path.
 
 ```json
 { "mcpServers": { "glyphstudio": { "command": "/Applications/GlyphStudio.app/Contents/MacOS/GlyphStudio", "args": ["--mcp"] } } }
 ```
 
-On Windows the default path is `%LOCALAPPDATA%\GlyphStudio\GlyphStudio.exe`; on Linux, `/opt/glyphstudio/bin/GlyphStudio`. [AGENTS.md](AGENTS.md) covers the build commands, generated files and more MCP details.
+The default path on Windows is `%LOCALAPPDATA%\GlyphStudio\GlyphStudio.exe`, and on Linux it’s `/opt/glyphstudio/bin/GlyphStudio`. Agents working on this repo should read [AGENTS.md](AGENTS.md).
 
-## Project layout
+## Build from source
 
-```text
-app/         Desktop catalog app
-sfsymbols/   Compose Multiplatform symbol library
-docs/        Library guides
+You need JDK 21 or newer.
+
+```sh
+./gradlew :app:run          # run the app (on Windows: gradlew.bat)
+./gradlew :app:jvmTest      # run the app tests
 ```
 
-**Developed by [bxane](https://github.com/bxanedot).**
+| Folder | Contents |
+| --- | --- |
+| `app/` | The GlyphStudio desktop app |
+| `sfsymbols/` | The Compose Multiplatform symbol library |
+| `docs/` | Library guides |
+| `scripts/` | Icon rendering and MCP test tools |
+
+<br />
+
+<sub>GlyphStudio is an independent project, not affiliated with Apple. SF Symbols are Apple’s property. Follow Apple’s <a href="https://developer.apple.com/design/human-interface-guidelines/sf-symbols/">SF Symbols terms</a>, and don’t use the symbols in app icons, logos or other trademark use. Released under the <a href="LICENSE">Apache License 2.0</a>. Made by <a href="https://github.com/bxanedot">bxane</a>.</sub>
