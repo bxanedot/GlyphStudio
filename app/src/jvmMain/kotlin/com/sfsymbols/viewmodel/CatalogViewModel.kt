@@ -77,13 +77,6 @@ public class CatalogViewModel(
         listView = !listView
     }
 
-    public var multiSelectEnabled: Boolean by mutableStateOf(false)
-        private set
-
-    /** Currently selected apple-names when multi-select is on. */
-    public var selectedIds: Set<String> by mutableStateOf(emptySet())
-        private set
-
     private var badgeJob: Job? = null
 
     private val allSymbols by lazy { SfSymbolsCatalog.all }
@@ -156,17 +149,6 @@ public class CatalogViewModel(
         recomputeFiltered()
     }
 
-    public fun togglePin(meta: SfSymbolMetadata) {
-        val next = if (meta.appleName in pinnedIds) {
-            pinnedIds - meta.appleName
-        } else {
-            pinnedIds + meta.appleName
-        }
-        pinnedIds = next
-        PinnedSymbols.save(next)
-        recomputeFiltered()
-    }
-
     public fun selectSymbol(meta: SfSymbolMetadata) {
         selectedSymbol = meta
     }
@@ -196,37 +178,7 @@ public class CatalogViewModel(
     }
 
     public fun updateGridScale(scale: Float) {
-        gridScale = scale.coerceIn(0.6f, 1.8f)
-    }
-
-    public fun updateMultiSelectEnabled(enabled: Boolean) {
-        multiSelectEnabled = enabled
-        if (!enabled) selectedIds = emptySet()
-    }
-
-    public fun toggleMultiSelect(meta: SfSymbolMetadata) {
-        selectedIds = if (meta.appleName in selectedIds)
-            selectedIds - meta.appleName
-        else
-            selectedIds + meta.appleName
-    }
-
-    public fun clearMultiSelection() {
-        selectedIds = emptySet()
-    }
-
-    public fun setFavoriteSelected(value: Boolean) {
-        val current = selectedIds
-        if (current.isEmpty()) return
-        val next = if (value) {
-            (pinnedIds + current).toSet()
-        } else {
-            (pinnedIds - current).toSet()
-        }
-        pinnedIds = next
-        PinnedSymbols.save(next)
-        selectedIds = emptySet()
-        badgeText = if (value) "Added ${current.size} favorites" else "Removed ${current.size} favorites"
+        gridScale = scale.coerceIn(0.5f, 1.6f)
     }
 
     public fun toggleFavorite(meta: SfSymbolMetadata) {
@@ -238,8 +190,6 @@ public class CatalogViewModel(
     }
 
     public fun isFavorite(meta: SfSymbolMetadata): Boolean = meta.appleName in pinnedIds
-
-    public fun isPinned(meta: SfSymbolMetadata): Boolean = meta.appleName in pinnedIds
 
     public fun copyAppleName(meta: SfSymbolMetadata) {
         copyText(meta.appleName, "Copied \"${meta.appleName}\"")
