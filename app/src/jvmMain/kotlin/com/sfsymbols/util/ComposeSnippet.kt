@@ -2,7 +2,7 @@ package com.sfsymbols.util
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import com.sfsymbols.data.SfSymbolMetadata
+import com.composables.sfsymbols.SfSymbolMetadata
 import com.sfsymbols.data.SymbolMode
 import java.util.Locale
 

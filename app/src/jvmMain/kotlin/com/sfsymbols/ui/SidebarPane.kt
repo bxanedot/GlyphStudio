@@ -24,7 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.Icon
 import com.sfsymbols.data.SfSymbolIconResolver
-import com.sfsymbols.data.SfSymbolsCatalog
+import com.composables.sfsymbols.SfSymbolsCatalog
 import com.sfsymbols.data.SymbolMode
 import androidx.compose.ui.unit.dp
 import com.sfsymbols.viewmodel.CatalogViewModel
@@ -197,10 +197,7 @@ private fun SidebarRow(
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             val glyph = remember(label) {
-                CATEGORY_ICONS[label]?.let { name ->
-                    SfSymbolsCatalog.all.firstOrNull { it.appleName == name }
-                        ?.let { SfSymbolIconResolver.resolve(it, SymbolMode.Monochrome) }
-                }
+                CATEGORY_ICONS[label]?.let { SfSymbolIconResolver.resolve(it, SymbolMode.Monochrome) }
             }
             if (glyph != null) {
                 Icon(

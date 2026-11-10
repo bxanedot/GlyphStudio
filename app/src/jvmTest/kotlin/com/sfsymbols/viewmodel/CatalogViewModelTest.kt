@@ -3,7 +3,7 @@ package com.sfsymbols.viewmodel
 import androidx.compose.runtime.snapshots.Snapshot
 import androidx.compose.runtime.snapshots.SnapshotStateObserver
 import androidx.compose.ui.graphics.Color
-import com.sfsymbols.data.SfSymbolsCatalog
+import com.composables.sfsymbols.SfSymbolsCatalog
 import com.sfsymbols.data.SymbolMode
 import kotlin.test.*
 

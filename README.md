@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="app/src/jvmMain/resources/app_icon.png" alt="GlyphStudio app icon" width="112" />
+  <img src="docs/logo.svg" alt="GlyphStudio app icon" width="112" />
   <h1>GlyphStudio</h1>
   <p><strong>Explore SF Symbols. Build with them in Compose.</strong></p>
   <p>A symbol catalog for desktop and a reusable icon library for Jetpack Compose and Kotlin Multiplatform.</p>
@@ -82,6 +82,10 @@ On macOS or Linux, use `./gradlew` with the same tasks.
 ## Apple SF Symbols
 
 GlyphStudio is an independent project and is not affiliated with Apple. SF Symbols and related artwork are Apple property; follow Apple's [SF Symbols usage terms](https://developer.apple.com/design/human-interface-guidelines/sf-symbols/) and restrictions. The symbols must not be used in app icons, logos, or other trademark use.
+
+## Working with coding agents
+
+[AGENTS.md](AGENTS.md) explains the build commands, which files are generated, and how to connect the bundled MCP server so an agent can search symbols and get ready-to-paste imports.
 
 ## Project layout
 

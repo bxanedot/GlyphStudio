@@ -1,0 +1,5 @@
+# Generated symbol data (about 28k files). Search tools that honour .ignore (ripgrep and
+# its users) skip these; look symbols up through SfSymbolsCatalog or the MCP server instead.
+sfsymbols/src/commonMain/kotlin/composables/sfsymbols/monochrome/
+sfsymbols/src/commonMain/kotlin/composables/sfsymbols/dualtone/
+sfsymbols/src/commonMain/kotlin/composables/sfsymbols/core/data/

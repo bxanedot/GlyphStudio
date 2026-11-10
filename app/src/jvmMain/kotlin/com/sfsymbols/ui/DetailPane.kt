@@ -15,14 +15,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,7 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.sfsymbols.data.SfSymbolIconResolver
-import com.sfsymbols.data.SfSymbolMetadata
+import com.composables.sfsymbols.SfSymbolMetadata
 import com.sfsymbols.data.SymbolTags
 import com.sfsymbols.viewmodel.CatalogViewModel
 import dev.nucleusframework.macoscompose.components.ColorGrid
@@ -74,7 +70,7 @@ public fun DetailPane(
 ) {
     val cs = MacosTheme.colorScheme
     val meta = viewModel.selectedSymbol ?: return
-    var tab by remember { mutableIntStateOf(0) }
+    var tab by remember { mutableIntStateOf(TAB_COLOR) }
 
     Surface(
         modifier = modifier,
@@ -135,7 +131,7 @@ public fun DetailPane(
             when (tab) {
                 TAB_COLOR -> ColorTab(viewModel)
                 TAB_BG -> BgTab(viewModel)
-                else -> InfoTab(viewModel, meta)
+                TAB_INFO -> InfoTab(viewModel, meta)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -185,7 +181,6 @@ private fun ColorTab(viewModel: CatalogViewModel) {
 
 @Composable
 private fun BgTab(viewModel: CatalogViewModel) {
-    val cs = MacosTheme.colorScheme
     GroupBox(label = "Background", modifier = Modifier.fillMaxWidth()) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             FlowRow(
@@ -220,12 +215,7 @@ private fun InfoTab(viewModel: CatalogViewModel, meta: SfSymbolMetadata) {
             Spacer(Modifier.height(4.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 PushButton(onClick = { viewModel.toggleFavorite(meta) }) {
-                    Icon(
-                        imageVector = if (viewModel.isFavorite(meta)) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (viewModel.isFavorite(meta)) "Remove favorite" else "Add favorite",
-                        tint = if (viewModel.isFavorite(meta)) Color(0xFFE0245E) else cs.textSecondary,
-                        modifier = Modifier.size(14.dp),
-                    )
+                    FavoriteIcon(viewModel.isFavorite(meta), cs.textSecondary, Modifier.size(14.dp))
                 }
             }
         }

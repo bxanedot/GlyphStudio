@@ -143,7 +143,6 @@ private val BREATHE_SCALE = SfCurve(0.4f, 0f, 0.6f, 1f)
 private val SCALE_DOWN = SfCurve(0.75f, 0f, 0.65f, 1f)
 private val SCALE_BACK = SfCurve(0.35f, 0f, 0.25f, 1f)
 private val ROTATE_ONCE = SfCurve(0.25f, 0.25f, 0.25f, 1f)
-private val ROTATE_LINEAR = SfCurve(0.17f, 0.17f, 0.83f, 0.83f)
 private val DRAW_ON = SfCurve(0.2f, 0f, 0.25f, 1f)
 private val DRAW_OFF = SfCurve(0.4f, 0f, 0.8f, 1f)
 

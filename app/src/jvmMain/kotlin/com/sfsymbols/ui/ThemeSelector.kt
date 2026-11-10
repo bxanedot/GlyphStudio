@@ -16,7 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.sfsymbols.data.SfSymbolIconResolver
-import com.sfsymbols.data.SfSymbolsCatalog
 import com.sfsymbols.data.SymbolMode
 import dev.nucleusframework.macoscompose.components.Text
 import dev.nucleusframework.macoscompose.theme.MacosTheme
@@ -28,8 +27,8 @@ public fun ThemeSelector(
     modifier: Modifier = Modifier,
 ) {
     val cs = MacosTheme.colorScheme
-    val moon = remember { SfSymbolsCatalog.all.firstOrNull { it.appleName == "moon.fill" }?.let { SfSymbolIconResolver.resolve(it, SymbolMode.Monochrome) } }
-    val sun = remember { SfSymbolsCatalog.all.firstOrNull { it.appleName == "sun.max.fill" }?.let { SfSymbolIconResolver.resolve(it, SymbolMode.Monochrome) } }
+    val moon = remember { SfSymbolIconResolver.resolve("moon.fill", SymbolMode.Monochrome) }
+    val sun = remember { SfSymbolIconResolver.resolve("sun.max.fill", SymbolMode.Monochrome) }
     Row(
         modifier.clip(RoundedCornerShape(10.dp)).background(cs.surface.copy(alpha = 0.72f)).padding(3.dp),
         verticalAlignment = Alignment.CenterVertically,

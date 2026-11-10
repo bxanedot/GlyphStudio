@@ -3,14 +3,13 @@ package com.sfsymbols.ui
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -29,12 +27,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items as lazyItems
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,24 +36,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import com.composables.sfsymbols.SfSymbolMetadata
 import com.sfsymbols.data.SfSymbolIconResolver
-import com.sfsymbols.data.SfSymbolMetadata
 import com.sfsymbols.data.SymbolMode
 import com.sfsymbols.viewmodel.CatalogViewModel
 import dev.nucleusframework.macoscompose.components.ScrollbarState
 import dev.nucleusframework.macoscompose.components.Text
 import dev.nucleusframework.macoscompose.components.VerticalScrollbar
-import dev.nucleusframework.macoscompose.theme.ControlSize
 import dev.nucleusframework.macoscompose.theme.MacosTheme
 
+private val FAVORITE_RED = Color(0xFFE0245E)
+
 /**
- * Center pane: grid of symbol cards for the current filter/mode. Grid cell size
- * is scaled by [CatalogViewModel.gridScale]; cards show a favorite heart and
- * support multi-select batch favorite/unfavorite.
+ * Center pane: grid (or list) of symbols for the current filter/mode. Grid cell
+ * size is scaled by [CatalogViewModel.gridScale]; each item has a favorite toggle.
  */
 @Composable
 public fun SymbolGrid(
@@ -71,12 +62,11 @@ public fun SymbolGrid(
         SymbolList(viewModel, modifier)
         return
     }
-    val minCell = (110f * viewModel.gridScale).dp
     val gridState = rememberLazyGridState()
     val scrollbarState = remember { GridScrollbarState(gridState) }
     Box(modifier = modifier) {
         LazyVerticalGrid(
-            columns = GridCells.Adaptive(minSize = minCell),
+            columns = GridCells.Adaptive(minSize = (110f * viewModel.gridScale).dp),
             state = gridState,
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
@@ -89,12 +79,7 @@ public fun SymbolGrid(
                     mode = viewModel.mode,
                     favorite = viewModel.isFavorite(meta),
                     selected = viewModel.selectedSymbol?.appleName == meta.appleName,
-                    multiSelect = viewModel.multiSelectEnabled,
-                    multiSelected = meta.appleName in viewModel.selectedIds,
-                    onClick = {
-                        if (viewModel.multiSelectEnabled) viewModel.toggleMultiSelect(meta)
-                        else viewModel.selectSymbol(meta)
-                    },
+                    onClick = { viewModel.selectSymbol(meta) },
                     onToggleFavorite = { viewModel.toggleFavorite(meta) },
                 )
             }
@@ -106,10 +91,7 @@ public fun SymbolGrid(
     }
 }
 
-/**
- * List-view alternative to the adaptive grid: one row per symbol with a
- * leading icon and trailing favorite toggle, driven by a native scrollbar.
- */
+/** List-view alternative to the adaptive grid: one row per symbol. */
 @Composable
 private fun SymbolList(
     viewModel: CatalogViewModel,
@@ -129,12 +111,7 @@ private fun SymbolList(
                     mode = viewModel.mode,
                     favorite = viewModel.isFavorite(meta),
                     selected = viewModel.selectedSymbol?.appleName == meta.appleName,
-                    multiSelect = viewModel.multiSelectEnabled,
-                    multiSelected = meta.appleName in viewModel.selectedIds,
-                    onClick = {
-                        if (viewModel.multiSelectEnabled) viewModel.toggleMultiSelect(meta)
-                        else viewModel.selectSymbol(meta)
-                    },
+                    onClick = { viewModel.selectSymbol(meta) },
                     onToggleFavorite = { viewModel.toggleFavorite(meta) },
                 )
             }
@@ -146,42 +123,30 @@ private fun SymbolList(
     }
 }
 
-/**
- * Adapts a [LazyListState] to the macos-ui [ScrollbarState] interface.
- */
+/** Adapts a [LazyListState] to the macos-ui [ScrollbarState] interface. */
 internal class LazyListScrollbarState(
     private val state: LazyListState,
 ) : ScrollbarState {
     override val scrollOffsetPx: Float
-        get() = state.firstVisibleItemScrollOffset.toFloat() +
-            state.firstVisibleItemIndex * (firstItemHeight())
+        get() = state.firstVisibleItemScrollOffset.toFloat() + state.firstVisibleItemIndex * itemHeight()
 
     override val maxScrollPx: Float
         get() {
             val li = state.layoutInfo
-            val total = li.totalItemsCount
-            if (total == 0) return 0f
-            val totalPx = li.totalItemsCount * firstItemHeight()
-            return (totalPx - li.viewportSize.height).coerceAtLeast(0).toFloat()
+            if (li.totalItemsCount == 0) return 0f
+            return (li.totalItemsCount * itemHeight() - li.viewportSize.height).coerceAtLeast(0).toFloat()
         }
 
     override val isScrollInProgress: Boolean
         get() = state.isScrollInProgress
 
-    private fun firstItemHeight(): Int {
-        var max = 0
-        for (info in state.layoutInfo.visibleItemsInfo) {
-            if (info.size > max) max = info.size
-        }
-        return max
-    }
+    private fun itemHeight(): Int = state.layoutInfo.visibleItemsInfo.maxOfOrNull { it.size } ?: 0
 
     override suspend fun scrollTo(px: Float) {
-        val h = firstItemHeight()
+        val h = itemHeight()
         if (h == 0) return
         val index = (px / h).toInt().coerceAtLeast(0)
-        val offset = (px - index * h).toInt().coerceAtLeast(0)
-        state.scrollToItem(index, offset)
+        state.scrollToItem(index, (px - index * h).toInt().coerceAtLeast(0))
     }
 }
 
@@ -195,15 +160,9 @@ internal class GridScrollbarState(
     override val scrollOffsetPx: Float
         get() = state.layoutInfo.viewportStartOffset.toFloat()
 
-    private fun columns(): Int {
-        val visible = state.layoutInfo.visibleItemsInfo
-        return visible.maxOfOrNull { it.column + 1 } ?: 1
-    }
+    private fun columns(): Int = state.layoutInfo.visibleItemsInfo.maxOfOrNull { it.column + 1 } ?: 1
 
-    private fun rowHeight(): Int {
-        val visible = state.layoutInfo.visibleItemsInfo
-        return visible.maxOfOrNull { it.size.height } ?: 0
-    }
+    private fun rowHeight(): Int = state.layoutInfo.visibleItemsInfo.maxOfOrNull { it.size.height } ?: 0
 
     override val maxScrollPx: Float
         get() {
@@ -212,8 +171,7 @@ internal class GridScrollbarState(
             val rh = rowHeight()
             if (rh == 0) return 0f
             val rows = (li.totalItemsCount + cols - 1) / cols
-            val total = rows * rh
-            return (total - li.viewportSize.height).coerceAtLeast(0).toFloat()
+            return (rows * rh - li.viewportSize.height).coerceAtLeast(0).toFloat()
         }
 
     override val isScrollInProgress: Boolean
@@ -224,9 +182,22 @@ internal class GridScrollbarState(
         val rh = rowHeight()
         if (rh == 0) return
         val row = (px / rh).toInt().coerceAtLeast(0)
-        val offsetInRow = (px - row * rh).toInt().coerceAtLeast(0)
-        state.scrollToItem(row * cols, scrollOffset = offsetInRow)
+        state.scrollToItem(row * cols, scrollOffset = (px - row * rh).toInt().coerceAtLeast(0))
     }
+}
+
+/** Heart toggle shared by the grid, list and inspector; drawn with the SF heart symbols. */
+@Composable
+internal fun FavoriteIcon(favorite: Boolean, inactiveTint: Color, modifier: Modifier = Modifier) {
+    val vector = remember(favorite) {
+        SfSymbolIconResolver.resolve(if (favorite) "heart.fill" else "heart", SymbolMode.Monochrome)
+    } ?: return
+    Icon(
+        imageVector = vector,
+        contentDescription = if (favorite) "Remove favorite" else "Add favorite",
+        tint = if (favorite) FAVORITE_RED else inactiveTint,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -235,26 +206,19 @@ private fun SymbolCard(
     mode: SymbolMode,
     favorite: Boolean,
     selected: Boolean,
-    multiSelect: Boolean,
-    multiSelected: Boolean,
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit,
 ) {
     val cs = MacosTheme.colorScheme
-    val vector: ImageVector? = remember(meta, mode) {
-        SfSymbolIconResolver.resolve(meta, mode)
-    }
-    if (vector == null) return
+    val vector = remember(meta, mode) { SfSymbolIconResolver.resolve(meta, mode) } ?: return
 
     val interactionSource = remember { MutableInteractionSource() }
     val hovered by interactionSource.collectIsHoveredAsState()
 
     val shape = RoundedCornerShape(12.dp)
-    val highlight = multiSelect && multiSelected
     val bg by animateColorAsState(
         when {
-            selected && !multiSelect -> cs.accent
-            highlight -> cs.accent.copy(alpha = 0.22f)
+            selected -> cs.accent
             hovered -> cs.textPrimary.copy(alpha = 0.10f)
             else -> cs.textPrimary.copy(alpha = 0.05f)
         },
@@ -265,11 +229,7 @@ private fun SymbolCard(
     Column(
         modifier = Modifier
             .hoverable(interactionSource)
-            .clickable(
-                indication = null,
-                interactionSource = interactionSource,
-                onClick = onClick,
-            ),
+            .clickable(indication = null, interactionSource = interactionSource, onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
@@ -277,26 +237,25 @@ private fun SymbolCard(
                 .fillMaxWidth()
                 .aspectRatio(1.25f)
                 .clip(shape)
-                .background(bg)
-                .then(if (highlight) Modifier.border(1.5.dp, cs.accent, shape) else Modifier),
+                .background(bg),
             contentAlignment = Alignment.Center,
         ) {
             // Square bounds: Icon paints with ContentScale.Fit, keeping the true aspect ratio.
             Icon(
                 imageVector = vector,
                 contentDescription = null,
-                tint = if (selected && !multiSelect) cs.onAccent else cs.textPrimary,
+                tint = if (selected) cs.onAccent else cs.textPrimary,
                 modifier = Modifier.fillMaxSize(0.42f),
             )
 
             // Favorite heart (top-end corner, own click area); shown on hover or when set.
             if (favorite || hovered) {
                 val heartBg by animateColorAsState(
-                    if (favorite) Color(0x33E0245E) else Color.Transparent,
+                    if (favorite) FAVORITE_RED.copy(alpha = 0.2f) else Color.Transparent,
                     tween(150),
                     label = "heart-bg",
                 )
-                Row(
+                Box(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .clip(RoundedCornerShape(8.dp))
@@ -307,32 +266,8 @@ private fun SymbolCard(
                             onClick = onToggleFavorite,
                         )
                         .padding(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
                 ) {
-                    Icon(
-                        imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = if (favorite) "Remove favorite" else "Add favorite",
-                        tint = if (favorite) Color(0xFFE0245E) else cs.textTertiary,
-                        modifier = Modifier.size(16.dp),
-                    )
-                }
-            }
-
-            // Multi-select check badge
-            if (multiSelect && multiSelected) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .size(20.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Selected",
-                        tint = cs.accent,
-                        modifier = Modifier.size(18.dp),
-                    )
+                    FavoriteIcon(favorite, cs.textTertiary, Modifier.size(16.dp))
                 }
             }
         }
@@ -341,9 +276,7 @@ private fun SymbolCard(
             color = cs.textSecondary,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 6.dp, start = 2.dp, end = 2.dp),
+            modifier = Modifier.padding(top = 6.dp, start = 2.dp, end = 2.dp),
         )
     }
 }
@@ -354,23 +287,14 @@ private fun SymbolListRow(
     mode: SymbolMode,
     favorite: Boolean,
     selected: Boolean,
-    multiSelect: Boolean,
-    multiSelected: Boolean,
     onClick: () -> Unit,
     onToggleFavorite: () -> Unit,
 ) {
     val cs = MacosTheme.colorScheme
-    val vector: ImageVector? = remember(meta, mode) {
-        SfSymbolIconResolver.resolve(meta, mode)
-    }
-    if (vector == null) return
+    val vector = remember(meta, mode) { SfSymbolIconResolver.resolve(meta, mode) } ?: return
     val shape = RoundedCornerShape(8.dp)
     val bg by animateColorAsState(
-        when {
-            multiSelect && multiSelected -> cs.accent.copy(alpha = 0.22f)
-            selected -> cs.accent.copy(alpha = 0.12f)
-            else -> Color.Transparent
-        },
+        if (selected) cs.accent.copy(alpha = 0.12f) else Color.Transparent,
         tween(150),
         label = "row-bg",
     )
@@ -388,10 +312,7 @@ private fun SymbolListRow(
             .padding(horizontal = 10.dp, vertical = 5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Box(
-            modifier = Modifier.size(40.dp),
-            contentAlignment = Alignment.Center,
-        ) {
+        Box(modifier = Modifier.size(40.dp), contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = vector,
                 contentDescription = null,
@@ -404,14 +325,11 @@ private fun SymbolListRow(
             color = cs.textPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 8.dp),
+            modifier = Modifier.weight(1f).padding(start = 8.dp),
         )
-        Icon(
-            imageVector = if (favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-            contentDescription = if (favorite) "Remove favorite" else "Add favorite",
-            tint = if (favorite) Color(0xFFE0245E) else cs.textTertiary,
+        FavoriteIcon(
+            favorite = favorite,
+            inactiveTint = cs.textTertiary,
             modifier = Modifier
                 .clip(shape)
                 .clickable(
