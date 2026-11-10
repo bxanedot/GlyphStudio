@@ -85,7 +85,13 @@ GlyphStudio is an independent project and is not affiliated with Apple. SF Symbo
 
 ## Working with coding agents
 
-[AGENTS.md](AGENTS.md) explains the build commands, which files are generated, and how to connect the bundled MCP server so an agent can search symbols and get ready-to-paste imports.
+GlyphStudio doubles as an MCP server, so AI agents can search symbols and get ready-to-paste imports. Add this to your agent's MCP settings (**Settings → MCP** in the app shows it with your exact install path):
+
+```json
+{ "mcpServers": { "glyphstudio": { "command": "/Applications/GlyphStudio.app/Contents/MacOS/GlyphStudio", "args": ["--mcp"] } } }
+```
+
+On Windows the default path is `%LOCALAPPDATA%\GlyphStudio\GlyphStudio.exe`; on Linux, `/opt/glyphstudio/bin/GlyphStudio`. [AGENTS.md](AGENTS.md) covers the build commands, generated files and more MCP details.
 
 ## Project layout
 

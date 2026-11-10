@@ -68,7 +68,7 @@ public class McpServer(
                     putJsonObject("capabilities") { putJsonObject("tools") {} }
                     putJsonObject("serverInfo") {
                         put("name", "glyphstudio")
-                        put("version", "1.0.0")
+                        put("version", "2.0.0")
                     }
                 }
             }
@@ -231,4 +231,31 @@ public class McpServer(
         output.println(json.encodeToString(JsonObject.serializer(), obj))
         output.flush()
     }
+}
+
+private val prettyJson = Json { prettyPrint = true }
+
+/**
+ * MCP client configuration that launches this app as a stdio server.
+ * [appPath] is the installed launcher (jpackage's `jpackage.app-path`); without it,
+ * as when running from Gradle, the config falls back to the `assembleMcp` classpath.
+ */
+public fun mcpClientConfig(appPath: String?): String {
+    val (command, args) = if (appPath != null) {
+        appPath to listOf("--mcp")
+    } else {
+        val lib = listOf(java.io.File("build/mcp/lib"), java.io.File("app/build/mcp/lib"))
+            .firstOrNull { it.isDirectory }?.absoluteFile?.invariantSeparatorsPath
+            ?: "/absolute/path/to/app/build/mcp/lib"
+        "java" to listOf("-Djava.awt.headless=true", "-cp", "$lib/*", "com.sfsymbols.MainKt", "--mcp")
+    }
+    val config = buildJsonObject {
+        putJsonObject("mcpServers") {
+            putJsonObject("glyphstudio") {
+                put("command", command)
+                putJsonArray("args") { args.forEach { add(JsonPrimitive(it)) } }
+            }
+        }
+    }
+    return prettyJson.encodeToString(JsonObject.serializer(), config)
 }
