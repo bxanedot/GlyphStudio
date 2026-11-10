@@ -159,7 +159,6 @@ private class SfGeometry(val symbol: SfSymbol, val weight: SfWeight, val scale: 
     val layerPaths: List<Path> = symbol.layers.map { l ->
         Path().also { p -> l.contours.forEach { c -> if (c < contours.size) p.addPath(contours[c]) } }
     }
-    val layerBounds: List<Rect> = layerPaths.map { it.getBounds() }
     val bounds: Rect = symbol.bounds(weight, scale)
 
     private val drawFields = HashMap<Int, SfDrawField?>()
