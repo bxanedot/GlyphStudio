@@ -39,7 +39,17 @@ public object FuzzySearch {
         }
     }
 
+    /** Every real word in the catalog. A query word found here is never treated as a typo of another word. */
+    private val vocabulary: Set<String> by lazy {
+        index.flatMapTo(HashSet()) { it.segments + it.pascalWords + it.tags }
+    }
+
     private const val STRONG_TOKEN = 120
+
+    private val FILLER_WORDS = setOf(
+        "a", "an", "the", "of", "on", "in", "at", "to", "for", "with", "and", "or", "each", "other",
+        "top", "some", "like", "that", "is", "are", "my", "me", "icon", "symbol", "something", "thing",
+    )
     private const val CACHE_LIMIT = 256
 
     /** Access-ordered so the least recently used query is evicted first. */
@@ -61,7 +71,11 @@ public object FuzzySearch {
 
         synchronized(cache) { cache[q] }?.let { return it.take(limit) }
 
+        // Drop filler so a description like "cubes stacked on top of each other" is scored on its real words.
         val tokens = q.split('.', '-', '_', ' ').filter { it.isNotEmpty() }
+            .let { all -> all.filterNot { it in FILLER_WORDS }.ifEmpty { all } }
+            // In a sentence ("4 cubes stacked") a number is a count, not part of a name like "4.circle".
+            .let { words -> if (words.size >= 3) words.filterNot { w -> w.all(Char::isDigit) } else words }
 
         val scored = ArrayList<Pair<Int, Int>>(index.size) // (score, symbolIndex)
         val all = SfSymbolsCatalog.all
@@ -69,10 +83,13 @@ public object FuzzySearch {
             val score = score(index[i], tokens, q)
             if (score > 0) scored.add(score to i)
         }
-        scored.sortWith { a, b ->
-            val c = b.first.compareTo(a.first) // higher score first
-            if (c != 0) c else index[a.second].apple.compareTo(index[b.second].apple)
-        }
+        // Higher score first; among equals the plainest symbol wins, so "trash" beats "arrow.up.trash.fill".
+        scored.sortWith(
+            compareByDescending<Pair<Int, Int>> { it.first }
+                .thenBy { index[it.second].segments.size }
+                .thenBy { index[it.second].apple.length }
+                .thenBy { index[it.second].apple }
+        )
         val result = scored.map { all[it.second] }
         synchronized(cache) {
             if (cache.size >= CACHE_LIMIT) cache.clear()
@@ -137,11 +154,9 @@ public object FuzzySearch {
             if (s > best) best = s
         }
         if (best == 0 && ix.normalized.contains(t)) best = 250
+        // A close misspelling of a real word beats scattered letters that merely appear in order.
+        if (best < 250 && t.length in 3..14 && t !in vocabulary) best = max(best, editDistanceMatch(ix, t))
         if (best == 0 && t.length >= 3 && isSubsequence(t, ix.normalized)) best = 150
-        if (best < STRONG_TOKEN && t.length in 3..12) {
-            val near = editDistanceMatch(ix, t)
-            if (near > best) best = near
-        }
         for (cat in ix.categories) {
             val s = when {
                 cat == t -> 500
@@ -163,27 +178,26 @@ public object FuzzySearch {
         return best
     }
 
+    /**
+     * Typo match against the symbol's name words and its tags ("tradh" -> trash,
+     * "garbgae" -> the garbage tag). Fewer edits score higher: 1 -> 260, 2 -> 220, 3 -> 180.
+     */
     private fun editDistanceMatch(ix: Indexed, t: String): Int {
         val budget = editBudget(t.length)
-        for (seg in ix.segments) {
-            if (seg.length in 2..14 && abs(seg.length - t.length) <= budget &&
-                boundedLevenshtein(seg, t, budget) <= budget
-            ) return 130
+        var best = budget + 1
+        for (word in ix.segments.asSequence() + ix.pascalWords + ix.tags) {
+            if (word.length in 2..14 && abs(word.length - t.length) <= budget) {
+                best = min(best, boundedDistance(word, t, budget))
+            }
         }
-        for (w in ix.pascalWords) {
-            if (w.length in 2..14 && abs(w.length - t.length) <= budget &&
-                boundedLevenshtein(w, t, budget) <= budget
-            ) return 120
-        }
-        return 0
+        return if (best in 1..budget) 300 - 40 * best else 0
     }
 
-    /** Short words tolerate few edits; longer words tolerate proportionally more. */
+    /** Short words tolerate one edit; longer words tolerate proportionally more. */
     private fun editBudget(len: Int): Int = when {
-        len <= 3 -> 1
-        len <= 6 -> 2
-        len <= 10 -> 3
-        else -> 4
+        len <= 4 -> 1
+        len <= 7 -> 2
+        else -> 3
     }
 
     private fun isSubsequence(needle: String, haystack: String): Boolean {
@@ -195,33 +209,36 @@ public object FuzzySearch {
     }
 
     /**
-     * Levenshtein distance that gives up as soon as [maxDist] is exceeded,
-     * so a hopeless candidate costs O(maxDist) instead of O(la * lb).
-     * Returns [maxDist] + 1 when the distance exceeds [maxDist].
+     * Edit distance where a wrong, missing or extra letter and two swapped
+     * neighbours ("hosue") each count as one edit (optimal string alignment).
+     * Gives up once two consecutive rows exceed [maxDist], returning [maxDist] + 1.
      */
-    private fun boundedLevenshtein(a: String, b: String, maxDist: Int): Int {
+    internal fun boundedDistance(a: String, b: String, maxDist: Int): Int {
         val la = a.length
         val lb = b.length
         if (abs(la - lb) > maxDist) return maxDist + 1
         if (la == 0) return lb
         if (lb == 0) return la
+        var prev2 = IntArray(lb + 1)
         var prev = IntArray(lb + 1) { it }
         var curr = IntArray(lb + 1)
+        var prevMin = 0
         for (i in 1..la) {
             curr[0] = i
             var rowMin = i
             for (j in 1..lb) {
                 val cost = if (a[i - 1] == b[j - 1]) 0 else 1
-                curr[j] = min(
-                    min(curr[j - 1] + 1, prev[j] + 1),
-                    prev[j - 1] + cost
-                )
-                if (curr[j] < rowMin) rowMin = curr[j]
+                var d = min(min(curr[j - 1] + 1, prev[j] + 1), prev[j - 1] + cost)
+                if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1]) d = min(d, prev2[j - 2] + 1)
+                curr[j] = d
+                if (d < rowMin) rowMin = d
             }
-            if (rowMin > maxDist) return maxDist + 1
-            val tmp = prev; prev = curr; curr = tmp
+            // A swap can reach back two rows, so stop only when both rows are out of budget.
+            if (rowMin > maxDist && prevMin > maxDist) return maxDist + 1
+            prevMin = rowMin
+            val tmp = prev2; prev2 = prev; prev = curr; curr = tmp
         }
-        return prev[lb]
+        return min(prev[lb], maxDist + 1)
     }
 
     private fun max(a: Int, b: Int): Int = if (a > b) a else b
