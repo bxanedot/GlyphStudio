@@ -105,8 +105,6 @@ includeBuild("../GlyphStudio") {
 
 ## ProGuard and R8 Optimization
 
-SF Symbols Compose includes consumer ProGuard rules (`consumer-rules.pro`). 
-
 Every icon vector is defined via lazy backing properties. During release compilation, R8 static analysis identifies and strips any unreferenced symbol from the compiled binary. No manual optimization rules are required.
 
 ---
