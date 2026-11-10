@@ -1,5 +1,7 @@
 package com.sfsymbols.data
 
+import com.composables.sfsymbols.SfSymbolMetadata
+import com.composables.sfsymbols.SfSymbolsCatalog
 import kotlin.math.abs
 import kotlin.math.min
 

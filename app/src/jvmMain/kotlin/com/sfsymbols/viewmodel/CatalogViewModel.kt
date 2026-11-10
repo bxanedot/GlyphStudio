@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import com.sfsymbols.data.FuzzySearch
 import com.sfsymbols.data.PinnedSymbols
-import com.sfsymbols.data.SfSymbolMetadata
-import com.sfsymbols.data.SfSymbolsCatalog
+import com.composables.sfsymbols.SfSymbolMetadata
+import com.composables.sfsymbols.SfSymbolsCatalog
 import com.sfsymbols.data.SymbolMode
 import com.sfsymbols.util.copyToClipboard
 import com.sfsymbols.util.composeSnippet

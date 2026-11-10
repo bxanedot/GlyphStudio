@@ -1,8 +1,8 @@
 package com.sfsymbols.mcp
 
 import com.sfsymbols.data.FuzzySearch
-import com.sfsymbols.data.SfSymbolMetadata
-import com.sfsymbols.data.SfSymbolsCatalog
+import com.composables.sfsymbols.SfSymbolMetadata
+import com.composables.sfsymbols.SfSymbolsCatalog
 import kotlinx.serialization.json.*
 import java.io.BufferedReader
 import java.io.OutputStreamWriter

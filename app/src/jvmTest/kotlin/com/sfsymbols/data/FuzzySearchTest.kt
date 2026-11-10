@@ -1,5 +1,6 @@
 package com.sfsymbols.data
 
+import com.composables.sfsymbols.SfSymbolsCatalog
 import kotlin.test.Test
 import kotlin.test.assertTrue
 import kotlin.test.assertEquals

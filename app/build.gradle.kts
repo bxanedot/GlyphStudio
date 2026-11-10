@@ -34,7 +34,7 @@ kotlin {
                 implementation(compose.material3)
                 implementation(compose.materialIconsExtended)
                 implementation(compose.components.resources)
-                if (rootProject.name == "GlyphStudio") implementation(project(":sfsymbols"))
+                implementation(project(":sfsymbols"))
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlin.reflect)

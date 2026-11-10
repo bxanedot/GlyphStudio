@@ -48,7 +48,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.sfsymbols.data.SfSymbolIconResolver
-import com.sfsymbols.data.SfSymbolMetadata
+import com.composables.sfsymbols.SfSymbolMetadata
 import com.sfsymbols.data.SymbolMode
 import com.sfsymbols.viewmodel.CatalogViewModel
 import dev.nucleusframework.macoscompose.components.ScrollbarState
