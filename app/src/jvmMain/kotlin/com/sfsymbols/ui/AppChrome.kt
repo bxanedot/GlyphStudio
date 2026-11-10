@@ -66,7 +66,6 @@ private fun BrowserHeader(viewModel: CatalogViewModel) {
             placeholder = "Search symbols",
             modifier = Modifier.width(260.dp),
         )
-        ThemeSelector(viewModel.darkTheme, viewModel::updateDarkTheme)
     }
 }
 

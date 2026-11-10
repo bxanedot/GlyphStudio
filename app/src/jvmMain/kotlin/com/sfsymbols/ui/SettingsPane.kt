@@ -102,18 +102,6 @@ public fun SettingsPane(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 28.dp, vertical = 24.dp),
         ) {
-            GroupBox(label = "Appearance", modifier = Modifier.fillMaxWidth()) {
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(text = "Appearance", color = cs.textPrimary, modifier = Modifier.weight(1f))
-                    ThemeSelector(viewModel.darkTheme, viewModel::updateDarkTheme)
-                }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
             GroupBox(label = "MCP (AI agent access)", modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "AI agents can search the catalog through a separate MCP process. " +
