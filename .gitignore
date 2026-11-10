@@ -9,3 +9,4 @@ local.properties
 Thumbs.db
 SF_Symbol/
 Jetpack_SF_Symbols/
+__pycache__/

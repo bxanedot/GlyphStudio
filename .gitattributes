@@ -1,5 +1,5 @@
 # Collapse generated symbol data in GitHub diffs and leave it out of language stats.
-sfsymbols/src/commonMain/kotlin/composables/sfsymbols/monochrome/** linguist-generated
-sfsymbols/src/commonMain/kotlin/composables/sfsymbols/dualtone/** linguist-generated
-sfsymbols/src/commonMain/kotlin/composables/sfsymbols/core/data/** linguist-generated
-sfsymbols/src/commonMain/kotlin/composables/sfsymbols/SfSymbolsCatalog.kt linguist-generated
+sfsymbols/src/commonMain/kotlin/com/composables/sfsymbols/monochrome/** linguist-generated
+sfsymbols/src/commonMain/kotlin/com/composables/sfsymbols/dualtone/** linguist-generated
+sfsymbols/src/commonMain/kotlin/com/composables/sfsymbols/core/data/** linguist-generated
+sfsymbols/src/commonMain/kotlin/com/composables/sfsymbols/SfSymbolsCatalog.kt linguist-generated
