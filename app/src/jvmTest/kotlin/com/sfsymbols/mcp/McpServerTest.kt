@@ -66,4 +66,13 @@ class McpServerTest {
         assertEquals(1, symbols.size)
         assertTrue(symbols.single().jsonObject["categories"]!!.jsonArray.any { it.jsonPrimitive.content.equals("weather", true) })
     }
+
+    @Test fun `client config launches the installed app with --mcp`() {
+        val server = Json.parseToJsonElement(mcpClientConfig("C:/Apps/GlyphStudio/GlyphStudio.exe"))
+            .jsonObject["mcpServers"]!!.jsonObject["glyphstudio"]!!.jsonObject
+        assertEquals("C:/Apps/GlyphStudio/GlyphStudio.exe", server["command"]!!.jsonPrimitive.content)
+        assertEquals(listOf("--mcp"), server["args"]!!.jsonArray.map { it.jsonPrimitive.content })
+        val dev = Json.parseToJsonElement(mcpClientConfig(null)).jsonObject["mcpServers"]!!.jsonObject["glyphstudio"]!!.jsonObject
+        assertEquals("java", dev["command"]!!.jsonPrimitive.content)
+    }
 }

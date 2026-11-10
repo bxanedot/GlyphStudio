@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,47 +35,20 @@ import dev.nucleusframework.macoscompose.components.TitleBarGroupButton
 import dev.nucleusframework.macoscompose.icons.Icon
 import dev.nucleusframework.macoscompose.icons.LucideChevronLeft
 import dev.nucleusframework.macoscompose.theme.MacosTheme
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
-import kotlinx.serialization.json.putJsonArray
-import kotlinx.serialization.json.add
-import kotlinx.serialization.json.Json
-import java.io.File
+import com.sfsymbols.mcp.mcpClientConfig
 
 private const val DEVELOPER = "bxane"
 private const val GITHUB_URL = "https://github.com/bxanedot"
-private val mcpConfigJson = Json { prettyPrint = true }
 
-/**
- * Dedicated Settings screen: appearance toggle, MCP usage instructions and
- * creator links (project, GitHub, Ko-fi, UPI).
- */
+/** Settings screen: MCP setup for AI agents and developer links. */
 @Composable
 public fun SettingsPane(
     viewModel: CatalogViewModel,
     modifier: Modifier = Modifier,
 ) {
     val cs = MacosTheme.colorScheme
-    val mcpLib = listOf(File("build/mcp/lib"), File("app/build/mcp/lib"))
-        .firstOrNull { it.isDirectory }
-        ?.absolutePath?.replace('\\', '/') ?: "/absolute/path/to/app/build/mcp/lib"
-    val mcpConfig = mcpConfigJson.encodeToString(
-        kotlinx.serialization.json.JsonObject.serializer(),
-        buildJsonObject {
-            put("mcpServers", buildJsonObject {
-                    put("glyphstudio", buildJsonObject {
-                    put("command", "java")
-                    putJsonArray("args") {
-                        add("-Djava.awt.headless=true")
-                        add("-cp")
-                        add("$mcpLib/*")
-                        add("com.sfsymbols.MainKt")
-                        add("--mcp")
-                    }
-                })
-            })
-        },
-    )
+    // jpackage sets this to the installed launcher; it is absent when running from Gradle.
+    val mcpConfig = remember { mcpClientConfig(System.getProperty("jpackage.app-path")) }
     Column(modifier = modifier.fillMaxSize()) {
         TitleBar(
             navigationActions = {
@@ -104,9 +78,9 @@ public fun SettingsPane(
         ) {
             GroupBox(label = "MCP (AI agent access)", modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "AI agents can search the catalog through a separate MCP process. " +
-                        "Build it with ./gradlew assembleMcp, then add the configuration below to your client. " +
-                        "Java 21+ must be available to the client; use its full path if needed.",
+                    text = "AI agents can search the catalog by running GlyphStudio as an MCP server. " +
+                        "Add the configuration below to your agent's MCP settings. It points at this " +
+                        "installed app, so there is nothing else to build or install.",
                     color = cs.textSecondary,
                 )
                 Spacer(Modifier.height(10.dp))

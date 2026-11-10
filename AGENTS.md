@@ -60,14 +60,24 @@ These paths are listed in `.ignore`, so ripgrep-based search skips them. To find
 
 ## Using the MCP server from an agent
 
-Build it with `./gradlew :app:assembleMcp`, then register it with your client:
+The installed app is the server: launching it with `--mcp` serves MCP on stdio instead of opening a window. Point your client at the installed app (**Settings → MCP** in the app shows this config with the exact path):
 
 ```json
 { "mcpServers": { "glyphstudio": {
-  "command": "java",
-  "args": ["-Djava.awt.headless=true", "-cp", "/abs/path/app/build/mcp/lib/*", "com.sfsymbols.MainKt", "--mcp"]
+  "command": "<installed app>",
+  "args": ["--mcp"]
 } } }
 ```
+
+Default `<installed app>` paths:
+
+| OS | Path |
+| --- | --- |
+| Windows (per-user install) | `%LOCALAPPDATA%\GlyphStudio\GlyphStudio.exe` (write it with `/` or `\\` in JSON) |
+| macOS | `/Applications/GlyphStudio.app/Contents/MacOS/GlyphStudio` |
+| Linux (.deb) | `/opt/glyphstudio/bin/GlyphStudio` |
+
+Without the app installed, build the server from source with `./gradlew :app:assembleMcp` and use `"command": "java"`, `"args": ["-Djava.awt.headless=true", "-cp", "/abs/path/app/build/mcp/lib/*", "com.sfsymbols.MainKt", "--mcp"]` (Java 21+).
 
 `search_symbols(query, category?, limit?)` returns ranked matches. `get_symbol(code)` returns one symbol with its categories, the `SfSymbols.Dualtone/Monochrome` expression and the import for each variant.
 
