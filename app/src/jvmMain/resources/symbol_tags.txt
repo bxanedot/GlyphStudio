@@ -527,3 +527,86 @@ arrow.left.arrow.right: swap exchange compare
 arrow.down.to.line: download save
 tray.and.arrow.down: download inbox save
 paperplane: send
+
+# --- shorthand people type (like "u" for "you") ---
+message: msg msgs txt dm
+envelope: eml
+photo: pics img imgs pix
+heart: fave faves luv
+star: fav favs
+lock: pw pwd pass passcode
+person: usr acct pfp
+gearshape: prefs pref cfg config
+gear: prefs cfg config
+calendar: cal
+video: vid vids
+magnifyingglass: srch
+trash: del bin
+square.and.arrow.down: dl
+info.circle: info
+questionmark.circle: faq
+location: loc
+bell: notif notifs
+phone: tel ph
+camera: cam
+
+# --- plain words a small child might use to describe what they see ---
+trash: can bucket throw yucky
+house: home roof chimney
+cube: box block blocks dice
+square.stack.3d.up: blocks stack stacked cubes tower pile layers
+square.grid.2x2: four boxes squares tiles grid blocks apps
+heart: love kiss
+star: twinkle sparkle shiny
+sun.max: sunny sunshine day hot bright
+moon: night sleep sleepy dark
+cloud: sky fluffy cloudy
+cloud.rain: raining rainy wet
+bolt: zap zappy thunder
+drop: water wet drip
+flame: fire hot burn
+car: vroom drive ride
+bicycle: bike pedal
+airplane: plane fly flying
+bus: school ride
+pawprint: paw doggy kitty pet footprint
+dog: puppy doggy woof
+cat: kitty meow
+bird: tweet birdie
+fish: swim goldfish
+leaf: plant nature green
+tree: forest woods
+carrot: veggie vegetable
+fork.knife: eat food dinner lunch hungry
+birthday.cake: party birthday candle
+gift: present surprise box
+balloon: party float
+music.note: song sing music
+bell: ding ring
+book: read story
+pencil: write draw
+scissors: cut snip
+paintbrush: paint colour color art
+hand.thumbsup: good yes nice
+hand.wave: hello hi bye wave
+face.smiling: happy smile smiley
+eye: look see watch
+ear: hear listen
+crown: king queen princess prince
+globe: world earth planet
+lightbulb: idea light lamp
+trophy: win winner prize cup
+gamecontroller: game play
+tv: telly cartoons watch
+headphones: listen music
+bed.double: sleep nap bedtime
+umbrella: rain
+snowflake: snow cold winter
+hare: bunny rabbit fast
+tortoise: turtle slow
+ant: bug
+ladybug: bug beetle
+sparkles: magic shiny
+shippingbox: package parcel delivery box
+xmark: no wrong
+checkmark: yes right

@@ -37,7 +37,7 @@ class FuzzySearchTest {
             "garbage" to "trash",
             "logout" to "rectangle.portrait.and.arrow.right",
             "ai" to "sparkles",
-            "cog" to "gearshape",
+            "cog" to "gear",
             "money" to "dollarsign",
         )
         for ((query, symbol) in expected) {
@@ -86,5 +86,57 @@ class FuzzySearchTest {
         val first = FuzzySearch.search("home", limit = 200).map { it.appleName }
         val second = FuzzySearch.search("home", limit = 200).map { it.appleName }
         assertEquals(first, second, "cached result must match a fresh evaluation")
+    }
+
+    private fun top(query: String) = FuzzySearch.search(query, limit = 5).map { it.appleName }
+
+    /** Checks every query, then reports all misses at once. */
+    private fun assertFirst(expected: Map<String, String>) {
+        val misses = expected.mapNotNull { (query, symbol) ->
+            top(query).takeIf { it.firstOrNull() != symbol }?.let { "\"$query\" -> want $symbol, got $it" }
+        }
+        assertTrue(misses.isEmpty(), misses.joinToString("; "))
+    }
+
+    @Test
+    fun `plain symbols outrank their variants`() {
+        val expected = mapOf("garbage" to "trash", "cog" to "gear", "home" to "house", "trash" to "trash")
+        assertFirst(expected)
+    }
+
+    @Test
+    fun `misspellings suggest the intended symbol first`() {
+        val expected = mapOf(
+            "tradh" to "trash",     // wrong key
+            "trsh" to "trash",      // missing letter
+            "hosue" to "house",     // swapped letters
+            "gearshap" to "gearshape",
+            "garbgae" to "trash",   // typo in a tag word
+            "settigns" to "gear",
+        )
+        assertFirst(expected)
+    }
+
+    @Test
+    fun `shorthand and everyday words find symbols`() {
+        assertFirst(mapOf(
+            "msg" to "message", "pw" to "lock", "pics" to "photo",
+            "bunny" to "hare", "zap" to "bolt", "doggy paw" to "pawprint", "four boxes" to "square.grid.2x2",
+        ))
+    }
+
+    @Test
+    fun `descriptions ignore filler words and counts`() {
+        assertFirst(mapOf(
+            "4 cubes stacked on top of each other" to "square.stack.3d.up",
+            "a yucky can" to "trash",
+            "4 circle" to "4.circle",
+        ))
+    }
+
+    @Test
+    fun `real words are not corrected into other words`() {
+        // "heart" is a real word, so it must not be read as a typo of "cart".
+        assertTrue(FuzzySearch.search("heart", limit = 20).none { it.appleName.startsWith("cart") })
     }
 }
